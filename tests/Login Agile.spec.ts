@@ -1,16 +1,29 @@
-import { test, expect } from '@playwright/test';
+import { defineConfig, devices } from '@playwright/test';
 
-test('test', async ({ page }) => {
-  await page.goto('https://automationexercise.com/signup');
-  await page.locator('form').filter({ hasText: 'Login' }).getByPlaceholder('Email Address').click();
-  await page.locator('form').filter({ hasText: 'Login' }).getByPlaceholder('Email Address').fill('jfilmont');
-  await page.locator('form').filter({ hasText: 'Login' }).getByPlaceholder('Email Address').press('Alt+6');
-  await page.locator('form').filter({ hasText: 'Login' }).getByPlaceholder('Email Address').press('Alt+4');
-  await page.locator('form').filter({ hasText: 'Login' }).getByPlaceholder('Email Address').fill('jfilmont@dgii.gov.do');
-  await page.locator('form').filter({ hasText: 'Login' }).getByPlaceholder('Email Address').press('Tab');
-  await page.getByRole('textbox', { name: 'Password' }).press('CapsLock');
-  await page.getByRole('textbox', { name: 'Password' }).fill('D');
-  await page.getByRole('textbox', { name: 'Password' }).press('CapsLock');
-  await page.getByRole('textbox', { name: 'Password' }).fill('Dgii2020');
-  await page.getByRole('button', { name: 'Login' }).click();
+export default defineConfig({
+  testDir: './tests',
+  fullyParallel: true,
+  // ... otras configuraciones que ya tengas ...
+
+  use: {
+    /* 1. OBLIGA A QUE EL NAVEGADOR SE MUESTRE EN PANTALLA */
+    headless: false, 
+
+    /* Configuración compartida para todos los proyectos */
+    trace: 'on-first-retry',
+  },
+
+  projects: [
+    {
+      name: 'chromium',
+      use: { 
+        ...devices['Desktop Chrome'],
+        /* 2. AGREGA CÁMARA LENTA (ej. 1500 milisegundos = 1.5 segundos entre cada acción) */
+        launchOptions: {
+          slowMo: 1500, 
+        }
+      },
+    },
+    // Puedes replicar el launchOptions en firefox o webkit si los usas
+  ],
 });
